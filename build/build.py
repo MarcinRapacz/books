@@ -177,6 +177,28 @@ def main() -> int:
     doc2 = doc.replace(toc, toc_numbered, 1)
     out_html.write_text(doc2, encoding="utf-8")
     print_pdf()
+
+    if PRINT:
+        # Chrome scales the narrow-column print layout slightly, which shrinks the full-bleed cover.
+        # Render the cover on its own (unscaled) and swap it in as page 1.
+        from pypdf import PdfReader, PdfWriter
+        cover_html = BUILD / "cover.html"
+        cover_pdf = BUILD / "cover.pdf"
+        cover_doc = re.sub(r'<div class="toc">.*</body>', "</body>", doc, flags=re.S)
+        cover_html.write_text(cover_doc, encoding="utf-8")
+        subprocess.run([
+            "google-chrome", "--headless=new", "--disable-gpu", "--no-sandbox", "--no-pdf-header-footer",
+            f"--print-to-pdf={cover_pdf}", f"file://{cover_html}",
+        ], check=True, capture_output=True)
+        writer = PdfWriter()
+        writer.add_page(PdfReader(str(cover_pdf)).pages[0])
+        body_pages = PdfReader(str(out_pdf)).pages
+        for page in list(body_pages)[1:]:
+            writer.add_page(page)
+        with open(out_pdf, "wb") as fh:
+            writer.write(fh)
+        cover_html.unlink(); cover_pdf.unlink()
+
     print(f"wrote {out_html} and {out_pdf}")
     return 0
 
