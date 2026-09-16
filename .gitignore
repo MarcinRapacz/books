@@ -1,2 +1,2 @@
 .venv/
-build/book.html
+build/*.html

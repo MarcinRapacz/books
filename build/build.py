@@ -8,8 +8,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+import os
 import markdown
 from pygments.formatters import HtmlFormatter
+
+PRINT = os.environ.get("PRINT") == "1"          # PRINT=1 -> bound, single-sided, toner-friendly variant
+DUPLEX = os.environ.get("DUPLEX") == "1"        # DUPLEX=1 -> mirrored margins for double-sided printing
 
 ROOT = Path(__file__).resolve().parent.parent
 CHAPTERS = ROOT / "chapters"
@@ -20,7 +24,7 @@ SUBTITLE = "Praktyczny przewodnik po roadmapie roadmap.sh/ai-engineer"
 AUTHOR = "Marcin & Claude"
 
 CSS = """
-@page { size: A4; margin: 22mm 20mm 24mm 20mm;
+@page { size: A4; margin: __PAGE_MARGIN__;
   @bottom-center { content: counter(page); font-family: "Noto Sans", sans-serif; font-size: 9pt; color: #64748b; }
   @top-right { content: "AI Engineer"; font-family: "Noto Sans", sans-serif; font-size: 8pt; color: #94a3b8; } }
 @page :first { margin: 0; @bottom-center { content: none; } @top-right { content: none; } }
@@ -44,7 +48,8 @@ pre code { background: none; padding: 0; font-size: inherit; }
 table { border-collapse: collapse; width: 100%; margin: 6pt 0 12pt; font-size: 9pt; font-family: "Noto Sans", "Liberation Sans", sans-serif; break-inside: auto; }
 tr { break-inside: avoid; }
 thead { display: table-header-group; }
-th, td { border: 1px solid #cbd5e1; padding: 4pt 6pt; vertical-align: top; text-align: left; }
+th, td { border: 1px solid #cbd5e1; padding: 4pt 6pt; vertical-align: top; text-align: left; overflow-wrap: break-word; }
+table code, li code { overflow-wrap: break-word; }
 th { background: #e2e8f0; }
 hr { border: 0; border-top: 1px solid #cbd5e1; margin: 16pt 0; }
 a { color: #1d4ed8; text-decoration: none; }
@@ -68,6 +73,13 @@ a { color: #1d4ed8; text-decoration: none; }
 .footnote { font-size: 8.5pt; color: #475569; }
 .katex-display { margin: 8pt 0 12pt; }
 """
+
+PAGE_MARGIN = os.environ.get("PAGE_MARGIN") or ("22mm 18mm 24mm 38mm" if PRINT else "22mm 20mm 24mm 20mm")
+CSS = CSS.replace("__PAGE_MARGIN__", PAGE_MARGIN)
+PRINT_CSS = """
+@page :left { margin: 22mm 38mm 24mm 18mm; }
+@page :right { margin: 22mm 18mm 24mm 38mm; }
+""" if DUPLEX else ""
 
 # pygments css for codehilite
 PYGMENTS_CSS = HtmlFormatter(style="friendly").get_style_defs(".codehilite")
@@ -107,7 +119,7 @@ def main() -> int:
 
     doc = f"""<!DOCTYPE html>
 <html lang="pl"><head><meta charset="utf-8"><title>{html.escape(TITLE)}</title>
-<style>{CSS}\n{PYGMENTS_CSS}</style>
+<style>{CSS}\n{PRINT_CSS if PRINT else ""}\n{PYGMENTS_CSS}</style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
@@ -123,8 +135,9 @@ def main() -> int:
 </body></html>"""
 
     BUILD.mkdir(exist_ok=True)
-    out_html = BUILD / "book.html"
-    out_pdf = BUILD / "book.pdf"
+    suffix = "-print" if PRINT else ""
+    out_html = BUILD / f"book{suffix}.html"
+    out_pdf = BUILD / f"book{suffix}.pdf"
 
     def print_pdf() -> None:
         cmd = [
