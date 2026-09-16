@@ -12,13 +12,13 @@ Zasady pisania: BRIEF.md. Skład: `.venv/bin/python build/build.py` → build/bo
 | 5 | chapters/05-modele-i-platformy.md | Modele i platformy (typy modeli, closed/open, self-hosting, wybór, katalog, HF, Ollama, LM Studio, OpenRouter, API & SDK) | 12 | gotowy |
 | 6 | chapters/06-embeddingi.md | Embeddingi | 7 | gotowy |
 | 7 | chapters/07-bazy-wektorowe.md | Bazy wektorowe | 8 | gotowy |
-| 8 | chapters/08-rag.md | RAG | 12 | – |
-| 9 | chapters/09-agenci.md | Agenci AI | 12 | – |
-| 10 | chapters/10-mcp.md | Model Context Protocol | 8 | – |
-| 11 | chapters/11-bezpieczenstwo.md | Bezpieczeństwo i etyka | 7 | – |
-| 12 | chapters/12-obserwowalnosc-i-ewaluacje.md | Obserwowalność, ewaluacje, testy regresyjne | 10 | – |
-| 13 | chapters/13-multimodalnosc.md | Multimodalność | 7 | – |
-| 14 | chapters/14-narzedzia.md | Narzędzia AI do kodowania | 3 | – |
+| 8 | chapters/08-rag.md | RAG | 12 | gotowy |
+| 9 | chapters/09-agenci.md | Agenci AI | 12 | gotowy |
+| 10 | chapters/10-mcp.md | Model Context Protocol | 8 | gotowy |
+| 11 | chapters/11-bezpieczenstwo.md | Bezpieczeństwo i etyka | 7 | gotowy |
+| 12 | chapters/12-obserwowalnosc-i-ewaluacje.md | Obserwowalność, ewaluacje, testy regresyjne | 10 | gotowy |
+| 13 | chapters/13-multimodalnosc.md | Multimodalność | 7 | gotowy |
+| 14 | chapters/14-narzedzia.md | Narzędzia AI do kodowania | 3 | gotowy |
 
 Węzły roadmapy per rozdział: patrz blok „Z roadmapy” na początku każdego pliku; dla nienapisanych rozdziałów lista w analizie z sesji 2026-09-16 (sekcje JSON roadmapy).
 
@@ -30,7 +30,11 @@ Węzły roadmapy per rozdział: patrz blok „Z roadmapy” na początku każdeg
 - Agenci nie mają kluczy API, więc wyniki wywołań API są opisane w prozie albo oznaczone jako „Przykładowy wynik”. Wyniki lokalne (tiktoken, numpy) są realnie uruchomione.
 - Dobór modeli agentów: rozdziały opisowe → Sonnet, rozdziały z kodem i researchem → Opus.
 
-## Stan na 2026-09-16 wieczór (sesja przerwana limitem)
+## Stan na 2026-09-16 późny wieczór
+
+Wszystkie 14 rozdziałów napisane i przejrzane, wstęp (`chapters/00-wstep.md`) dodany, PDF zbudowany. Poniżej historyczna notatka z przerwy w sesji.
+
+### Notatka z przerwy (limit sesji)
 
 Rozdziały 1–7 gotowe i przejrzane. Rozdziały 8–14 pisali równolegle subagenci (Opus; 14 na Sonnet) z promptami opisanymi poniżej w skrócie. Jeśli plik rozdziału istnieje i kończy się sekcją `## Źródła`, uznaj go za napisany, ale nieprzejrzany: sprawdź nagłówki, brak dywizów jako myślników, brak cyrylicy, oznaczenie „Przykładowy wynik:” przy nieuruchomionych wywołaniach API. Jeśli pliku brak albo jest urwany, uruchom agenta od nowa.
 

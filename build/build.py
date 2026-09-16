@@ -41,7 +41,9 @@ pre { font-family: "JetBrains Mono", "DejaVu Sans Mono", "Liberation Mono", mono
       background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 4px; padding: 8pt 10pt; margin: 6pt 0 10pt;
       white-space: pre-wrap; word-break: break-word; break-inside: avoid; }
 pre code { background: none; padding: 0; font-size: inherit; }
-table { border-collapse: collapse; width: 100%; margin: 6pt 0 12pt; font-size: 9pt; font-family: "Noto Sans", "Liberation Sans", sans-serif; break-inside: avoid; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0 12pt; font-size: 9pt; font-family: "Noto Sans", "Liberation Sans", sans-serif; break-inside: auto; }
+tr { break-inside: avoid; }
+thead { display: table-header-group; }
 th, td { border: 1px solid #cbd5e1; padding: 4pt 6pt; vertical-align: top; text-align: left; }
 th { background: #e2e8f0; }
 hr { border: 0; border-top: 1px solid #cbd5e1; margin: 16pt 0; }
@@ -146,7 +148,8 @@ def main() -> int:
         norm = re.sub(r"\s+", " ", html.unescape(title)).strip()
         for i, pg in enumerate(pages[cursor[0]:], start=cursor[0] + 1):
             for line in pg.splitlines():
-                if re.sub(r"\s+", " ", line).strip() == norm:
+                ln = re.sub(r"\s+", " ", line).strip()
+                if ln == norm or (len(norm) > 40 and ln and norm.startswith(ln) and len(ln) >= 25):
                     cursor[0] = i - 1
                     return i
         return None
