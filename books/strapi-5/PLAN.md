@@ -45,9 +45,9 @@ Razem ok. 83 strony. Port agenta: `13NN` (rozdział 4 → 1304).
 - Fala 3 (5, max 4 naraz; 13 startuje po pierwszym zwolnionym miejscu): 9, 10, 11, 12, 13.
 - Redaktor: przegląd każdego rozdziału po fali, wstęp, skład PDF, poprawki spójności.
 
-## Stan na 3 października 2026
+## Stan na 3 października 2026, wieczór
 
-Fundament gotowy i zweryfikowany (seed, REST z populate, logowanie). Brief i plan napisane. Następny krok: fala 1.
+Wszystkie rozdziały gotowe i przejrzane, PDF złożony: `build/strapi-5.pdf`, 87 stron (ok. 34 tys. słów). Kod każdego rozdziału sprawdzony na uruchomionym Strapi 5.56 (curl, tsc, testy Vitest w rozdziale 12, Docker + Postgres w rozdziale 13). Panelu admina nikt nie klikał – rozdziały 9 i 10 opisują UI na podstawie kodu i udanego buildu.
 
 ## Do przeglądu końcowego
 
