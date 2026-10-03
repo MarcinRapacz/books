@@ -7,7 +7,7 @@ Projekt przewodni „Redakcja”: `code/` (Strapi 5.56.0, TS, SQLite, seed `npm 
 |---|---|---|---|---|---|---|
 | 0 | 00-wstep.md | Wstęp | 2 | – | redaktor | – |
 | 1 | 01-architektura.md | Architektura i droga żądania | 6 | 1 | opus | gotowy, przejrzany |
-| 2 | 02-modelowanie-tresci.md | Modelowanie treści | 5 | 2 | sonnet | – |
+| 2 | 02-modelowanie-tresci.md | Modelowanie treści | 5 | 2 | sonnet | gotowy, przejrzany |
 | 3 | 03-content-api.md | Content API od strony klienta: REST, GraphQL, klient | 7 | 2 | opus | – |
 | 4 | 04-routes-policies-middlewares.md | Trasy, polityki i middleware | 9 | 1 | opus | gotowy, przejrzany |
 | 5 | 05-kontrolery-i-serwisy.md | Kontrolery, serwisy, walidacja i błędy | 6 | 1 | opus | gotowy, przejrzany |
