@@ -130,7 +130,7 @@ Składnię potwierdza `claude mcp add --help` (opcje przed nazwą, domyślny zak
 
 ### Wbudowany serwer MCP Strapi
 
-Drugi, darmowy serwer MCP działa w twojej instancji i pozwala klientowi AI czytać i zmieniać treści przez Content Manager. W „Redakcji” włącza go flaga, domyślnie wyłączona:
+Drugi, darmowy serwer MCP działa w twojej instancji i pozwala klientowi AI czytać i zmieniać treści przez Content Manager. Rozdział 9 pokazał, jak plugin dokłada do niego własne narzędzie; tu chodzi o sam serwer. W „Redakcji” włącza go flaga, domyślnie wyłączona:
 
 ```ts
 // config/server.ts (fragment)

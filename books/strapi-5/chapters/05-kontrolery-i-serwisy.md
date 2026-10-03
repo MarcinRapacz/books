@@ -216,6 +216,8 @@ async submit({ body, articleId, authorId }: CommentSubmission) {
 
 Autor pochodzi z `ctx.state.user`, a nie z ciała żądania, więc nie da się go podrobić niezależnie od uprawnień roli. Serwis przy okazji pilnuje reguły, której nie wyrazisz w schemacie: komentować można tylko opublikowane artykuły. Nie da się tego zrobić przez `ctx.request.body.data.author = user.id` przed `super.create(ctx)`, bo `validateInput` w rdzeniu odrzuci klucz `author` tym samym `Invalid key author`. Alternatywą bez własnej akcji `create` jest middleware Document Service ustawiający autora (rozdział 6). Ograniczenie, kto może edytować i usuwać czyje artykuły, to polityka `is-owner` z rozdziału 4.
 
+Ta ochrona obowiązuje tylko na trasie REST. Resolvery GraphQL i panel admina wołają Document Service z pominięciem kontrolera, więc po instalacji GraphQL ten sam atak wraca przez mutację `createComment` (rozdział 3). Regułę, która ma działać niezależnie od wejścia, przenieś do middleware Document Service (rozdział 6).
+
 ## Akcja niestandardowa: zatwierdzanie komentarza
 
 `POST /comments/:id/approve` składa się z tych samych klocków: trasa w `routes/01-custom-comment.ts`, akcja w kontrolerze, która woła serwis i kończy się na `sanitizeOutput` i `transformResponse` jak `related`, oraz reguła w serwisie:

@@ -26,7 +26,7 @@ config/middlewares.ts (globalne, w kolejności z tablicy)
       → serwis → Document Service (+ jego middleware) → Query Engine
 ```
 
-Wynikają z tego trzy rzeczy. Polityki działają **po** sprawdzeniu uprawnień roli, więc jeśli rola Public nie ma akcji `update`, twoja polityka w ogóle się nie uruchomi. Middleware trasy działają **po** politykach, a nie przed nimi – żądanie odrzucone przez politykę albo przez `authorize` nigdy do nich nie dotrze, a middleware trasy nie przygotuje też danych dla polityki. I wreszcie: wszystko poniżej routera dotyczy tylko tras Content API. Panel admina ma własne trasy (`/content-manager/...`), na które twoje polityki i middleware tras nie są podpięte.
+Wynikają z tego trzy rzeczy. Polityki działają **po** sprawdzeniu uprawnień roli, więc jeśli rola Public nie ma akcji `update`, twoja polityka w ogóle się nie uruchomi. Middleware trasy działają **po** politykach, a nie przed nimi – żądanie odrzucone przez politykę albo przez `authorize` nigdy do nich nie dotrze, a middleware trasy nie przygotuje też danych dla polityki. I wreszcie: wszystko poniżej routera dotyczy tylko tras Content API. Panel admina ma własne trasy (`/content-manager/...`), na które twoje polityki i middleware tras nie są podpięte. To samo dotyczy GraphQL i wbudowanego serwera MCP: ich resolvery i narzędzia wołają Document Service bezpośrednio (rozdziały 3 i 12).
 
 ## Trasy
 
