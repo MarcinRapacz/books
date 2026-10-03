@@ -260,7 +260,7 @@ Cron w Strapi działa w każdym procesie: przy dwóch replikach zadanie wykona s
 
 ## Preview: przycisk podglądu w panelu
 
-Funkcja Preview dodaje w edycji wpisu przycisk otwierający stronę frontendu z aktualnym szkicem. W darmowej wersji to podgląd w ramce obok formularza; Live Preview z edycją w podglądzie wymaga planu Growth lub Enterprise. Konfiguracja leży w `config/admin.ts`: `handler` zamienia dokument na adres frontendu, a `null` ukrywa podgląd dla typu:
+Funkcja Preview dodaje w edycji wpisu przycisk otwierający stronę frontendu z aktualnym szkicem. W darmowej wersji podgląd otwiera się na pełnym ekranie panelu; widok obok formularza i edycja w samym podglądzie to Live Preview z planów Growth i Enterprise. Konfiguracja leży w `config/admin.ts`: `handler` zamienia dokument na adres frontendu, a `null` ukrywa podgląd dla typu:
 
 ```ts
 preview: {
