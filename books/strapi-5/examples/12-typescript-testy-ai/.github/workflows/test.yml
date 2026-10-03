@@ -1,0 +1,13 @@
+# Not run in the book's environment; the two commands were verified locally on a copy without .env.
+name: Tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npx strapi ts:generate-types && git diff --exit-code types/generated
+      - run: npm test
