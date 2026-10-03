@@ -1,0 +1,43 @@
+name: redakcja
+
+services:
+  strapi:
+    build: .
+    image: redakcja-strapi:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_HOST: db
+    ports:
+      # Local test only; behind Traefik the service publishes no ports at all.
+      - "127.0.0.1:1313:1337"
+    volumes:
+      # The whole public/ dir, not public/uploads: `strapi import` renames uploads/ to a backup
+      # directory next to it, and a mount point cannot be renamed.
+      - public:/opt/app/public
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      # Local test only (pg_dump/psql from the host); never publish it on a VPS.
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
+  public:

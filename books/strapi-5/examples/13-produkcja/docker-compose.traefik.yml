@@ -1,0 +1,20 @@
+# Production override on the VPS: docker compose -f docker-compose.yml -f docker-compose.traefik.yml up -d
+# Traefik runs in its own stack, attached to the external network "web".
+services:
+  strapi:
+    ports: !reset []
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web
+      - traefik.http.routers.redakcja.rule=Host(`cms.redakcja.example`)
+      - traefik.http.routers.redakcja.entrypoints=websecure
+      - traefik.http.routers.redakcja.tls.certresolver=letsencrypt
+      - traefik.http.services.redakcja.loadbalancer.server.port=1337
+    networks: [default, web]
+
+  db:
+    ports: !reset []
+
+networks:
+  web:
+    external: true

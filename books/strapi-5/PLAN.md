@@ -18,7 +18,7 @@ Projekt przewodni „Redakcja”: `code/` (Strapi 5.56.0, TS, SQLite, seed `npm 
 | 10 | 10-panel-admina.md | Panel admina i custom fields | 5 | 3 | opus | – |
 | 11 | 11-frontend.md | Integracja z frontendem (Next.js / Nuxt) | 5 | 3 | opus | gotowy, przejrzany |
 | 12 | 12-typescript-testy-ai.md | TypeScript, testy i narzędzia AI | 4 | 3 | opus | gotowy, przejrzany |
-| 13 | 13-produkcja.md | Produkcja self-hosted: Docker, Postgres, dane, aktualizacje | 7 | 3 | opus | – |
+| 13 | 13-produkcja.md | Produkcja self-hosted: Docker, Postgres, dane, aktualizacje | 7 | 3 | opus | gotowy, przejrzany |
 
 Razem ok. 83 strony. Port agenta: `13NN` (rozdział 4 → 1304).
 
