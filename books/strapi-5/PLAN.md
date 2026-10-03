@@ -14,7 +14,7 @@ Projekt przewodni „Redakcja”: `code/` (Strapi 5.56.0, TS, SQLite, seed `npm 
 | 6 | 06-document-service.md | Document Service, Query Engine i reagowanie na zmiany | 7 | 1 | opus | gotowy, przejrzany |
 | 7 | 07-uwierzytelnianie.md | Użytkownicy, tokeny i uprawnienia | 6 | 2 | opus | gotowy, przejrzany |
 | 8 | 08-funkcje-wbudowane.md | Draft & publish, i18n, media, e-mail, webhooki, cron | 7 | 2 | opus | gotowy, przejrzany |
-| 9 | 09-pluginy.md | Własny plugin | 7 | 3 | opus | – |
+| 9 | 09-pluginy.md | Własny plugin | 7 | 3 | opus | gotowy, przejrzany |
 | 10 | 10-panel-admina.md | Panel admina i custom fields | 5 | 3 | opus | – |
 | 11 | 11-frontend.md | Integracja z frontendem (Next.js / Nuxt) | 5 | 3 | opus | – |
 | 12 | 12-typescript-testy-ai.md | TypeScript, testy i narzędzia AI | 4 | 3 | opus | – |
@@ -53,3 +53,4 @@ Fundament gotowy i zweryfikowany (seed, REST z populate, logowanie). Brief i pla
 
 - Szkice dla Public (`?status=draft`): rozdział 3 zamyka lukę globalną polityką `drafts-for-authors-only` (REST + GraphQL), rozdział 7 middleware trasy `published-only`. Ujednolicić: jedno rozwiązanie główne, drugie jako odesłanie.
 - GraphQL omija polityki tras i kontrolery (rozdział 3) – sprawdzić, czy rozdziały 4 i 5 mają odesłanie.
+- MCP: rozdział 9 pokazuje narzędzie MCP pluginu (`mcp: { enabled: true }`), rozdział 12 wbudowany serwer MCP – sprawdzić, czy się nie dublują.
