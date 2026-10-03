@@ -1,0 +1,17 @@
+{
+  "name": "redakcja-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@strapi/client": "^1.6.2",
+    "qs": "^6.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.1",
+    "@types/qs": "^6.15.1",
+    "typescript": "^5.9.3"
+  }
+}

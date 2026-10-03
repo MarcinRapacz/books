@@ -8,7 +8,7 @@ Projekt przewodni „Redakcja”: `code/` (Strapi 5.56.0, TS, SQLite, seed `npm 
 | 0 | 00-wstep.md | Wstęp | 2 | – | redaktor | – |
 | 1 | 01-architektura.md | Architektura i droga żądania | 6 | 1 | opus | gotowy, przejrzany |
 | 2 | 02-modelowanie-tresci.md | Modelowanie treści | 5 | 2 | sonnet | gotowy, przejrzany |
-| 3 | 03-content-api.md | Content API od strony klienta: REST, GraphQL, klient | 7 | 2 | opus | – |
+| 3 | 03-content-api.md | Content API od strony klienta: REST, GraphQL, klient | 7 | 2 | opus | gotowy, przejrzany |
 | 4 | 04-routes-policies-middlewares.md | Trasy, polityki i middleware | 9 | 1 | opus | gotowy, przejrzany |
 | 5 | 05-kontrolery-i-serwisy.md | Kontrolery, serwisy, walidacja i błędy | 6 | 1 | opus | gotowy, przejrzany |
 | 6 | 06-document-service.md | Document Service, Query Engine i reagowanie na zmiany | 7 | 1 | opus | gotowy, przejrzany |
@@ -48,3 +48,8 @@ Razem ok. 83 strony. Port agenta: `13NN` (rozdział 4 → 1304).
 ## Stan na 3 października 2026
 
 Fundament gotowy i zweryfikowany (seed, REST z populate, logowanie). Brief i plan napisane. Następny krok: fala 1.
+
+## Do przeglądu końcowego
+
+- Szkice dla Public (`?status=draft`): rozdział 3 zamyka lukę globalną polityką `drafts-for-authors-only` (REST + GraphQL), rozdział 7 middleware trasy `published-only`. Ujednolicić: jedno rozwiązanie główne, drugie jako odesłanie.
+- GraphQL omija polityki tras i kontrolery (rozdział 3) – sprawdzić, czy rozdziały 4 i 5 mają odesłanie.
