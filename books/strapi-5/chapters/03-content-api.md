@@ -109,13 +109,13 @@ export default (policyContext: DraftPolicyContext) => {
   if (String(requested ?? '').toLowerCase() !== 'draft') return true;
 
   const { user, auth } = policyContext.state;
-  if (user || auth?.strategy?.name === 'api-token') return true;
+  if (user || auth?.strategy?.name === 'content-api-token') return true;
 
   throw new errors.PolicyError('Drafts require authentication');
 };
 ```
 
-W REST polityka czyta `request.query`, bo `policyContext.query` jest w politykach puste (rozdział 4 wyjaśnia dlaczego). W GraphQL argumenty leżą w `args`, a enum ma postać `DRAFT`. Szkice widzi zalogowany użytkownik i API token, np. podgląd w Next.js z rozdziału 11. Po podpięciu w core routerze artykułów (`find`, `findOne`, jak w rozdziale 4) anonimowe `?status=draft` dostaje 403 `Drafts require authentication`, a z tokenem Anny listę szkiców.
+W REST polityka czyta `request.query`, bo `policyContext.query` jest w politykach puste (rozdział 4 wyjaśnia dlaczego). W GraphQL argumenty leżą w `args`, a enum ma postać `DRAFT`. Strategia API tokenów nazywa się w Strapi 5.56 `content-api-token`, nie `api-token`. Po podpięciu w core routerze artykułów (`find`, `findOne`, jak w rozdziale 4) anonimowe `?status=draft` dostaje 403 `Drafts require authentication`, a z JWT Anny albo z tokenem read-only (np. podgląd w Next.js z rozdziału 11) – listę szkiców. To świadomy kompromis: każdy zalogowany użytkownik czyta wszystkie szkice, także cudze. Rozdział 7 domyka REST ostrzej, middleware trasy `published-only`, który wymusza `status=published` dla wszystkich poza API tokenem i daje autorom tylko ich własne szkice przez `/articles/mine`. Middleware tras nie obejmują jednak GraphQL, więc polityka zostaje strażnikiem dla obu API.
 
 Jedna trasa to za mało. `GET /api/categories?status=draft&populate[articles][fields][0]=title` dalej zwracało szkic o Dockerze w kategorii DevOps, bo `status` przechodzi na dołączone relacje. Politykę trzeba podpiąć w każdym typie, z którego da się dojść do artykułów (w `examples/`: artykuły, kategorie, komentarze), albo zastąpić ją middleware globalnym z rozdziału 4. Podobnie do `status` działa `locale` (`?locale=pl`); fundament nie ma i18n, więc Strapi go ignoruje, a rozdział 8 pokazuje go na typie z tłumaczeniami.
 
@@ -253,7 +253,7 @@ extensionService.use(() => ({
 
 `disableMutations()` usuwa mutacje komentarzy ze schematu, więc komentarze powstają tylko przez kontroler REST z walidacją z rozdziału 5; `createComment` kończy się teraz błędem `Cannot query field "createComment" on type "Mutation"`. Węższe opcje to `disableActions(['delete'])` i `field('moderationStatus').disableInput()`.
 
-`articleBySlug` to własny resolver, bo wbudowane `article` przyjmuje tylko `documentId`, a frontend zna slug z URL-a. Zwraca dokument z Document Service, a typ `Article` z shadow CRUD rozwiązuje zagnieżdżone pola razem z kontrolą uprawnień do relacji. Klucz `auth` jest konieczny: bez niego gość dostaje `Forbidden access`, a każdy zalogowany użytkownik dowolnej roli – wynik. `scope` wiąże resolver z uprawnieniem `findOne` artykułów, czyli z tymi samymi rolami co REST. `draftGuards` podpina politykę `drafts-for-authors-only` pod wszystkie zapytania o artykuły, kategorie i komentarze: anonimowe `articles(status: DRAFT)` zwraca `"data": null` z błędem `Drafts require authentication`, a z tokenem Anny pięć szkiców.
+`articleBySlug` to własny resolver, bo wbudowane `article` przyjmuje tylko `documentId`, a frontend zna slug z URL-a. Zwraca dokument z Document Service, a typ `Article` z shadow CRUD rozwiązuje zagnieżdżone pola razem z kontrolą uprawnień do relacji. Klucz `auth` jest konieczny: bez niego gość dostaje `Forbidden access`, a każdy zalogowany użytkownik dowolnej roli – wynik. `scope` wiąże resolver z uprawnieniem `findOne` artykułów, czyli z tymi samymi rolami co REST. `draftGuards` podpina politykę `drafts-for-authors-only` pod wszystkie zapytania o artykuły, kategorie i komentarze: anonimowe `articles(status: DRAFT)` zwraca `"data": null` z błędem `Drafts require authentication`, a z JWT Anny albo tokenem read-only listę szkiców.
 
 Dla Redakcji REST zostaje domyślnym wyborem: działa bez pluginu, przechodzi przez polityki i kontrolery z rozdziałów 4 i 5 i łatwo go cache'ować po URL-u. GraphQL ma sens, gdy wiele ekranów potrzebuje różnych wycinków tych samych danych albo zespół już pracuje z Apollo. Wtedy traktuj go jak drugie, równorzędne API, z własnymi limitami, politykami w `resolversConfig` i regułami biznesowymi w Document Service.
 

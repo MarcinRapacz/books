@@ -51,6 +51,6 @@ Fundament gotowy i zweryfikowany (seed, REST z populate, logowanie). Brief i pla
 
 ## Do przeglądu końcowego
 
-- Szkice dla Public (`?status=draft`): rozdział 3 zamyka lukę globalną polityką `drafts-for-authors-only` (REST + GraphQL), rozdział 7 middleware trasy `published-only`. Ujednolicić: jedno rozwiązanie główne, drugie jako odesłanie.
-- GraphQL omija polityki tras i kontrolery (rozdział 3) – sprawdzić, czy rozdziały 4 i 5 mają odesłanie.
-- MCP: rozdział 9 pokazuje narzędzie MCP pluginu (`mcp: { enabled: true }`), rozdział 12 wbudowany serwer MCP – sprawdzić, czy się nie dublują.
+- [zrobione] Szkice dla Public: rozdział 3 (polityka, REST + GraphQL, nazwa strategii `content-api-token` poprawiona) odsyła do rozdziału 7 (`published-only`, `/articles/mine`).
+- [zrobione] GraphQL/MCP omijają trasy i kontrolery – odesłania w rozdziałach 4 i 5.
+- [zrobione] MCP: rozdział 9 (narzędzie pluginu) i 12 (serwer) odsyłają do siebie.

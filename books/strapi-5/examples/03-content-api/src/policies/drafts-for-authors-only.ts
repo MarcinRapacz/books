@@ -15,7 +15,7 @@ export default (policyContext: DraftPolicyContext) => {
   if (String(requested ?? '').toLowerCase() !== 'draft') return true;
 
   const { user, auth } = policyContext.state;
-  if (user || auth?.strategy?.name === 'api-token') return true;
+  if (user || auth?.strategy?.name === 'content-api-token') return true;
 
   throw new errors.PolicyError('Drafts require authentication');
 };
