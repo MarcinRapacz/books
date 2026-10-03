@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_shared_seos",
+  "info": {
+    "displayName": "Seo",
+    "icon": "search"
+  },
+  "options": {},
+  "attributes": {
+    "metaTitle": {
+      "type": "customField",
+      "customField": "global::seo-title",
+      "required": true,
+      "maxLength": 70,
+      "options": {
+        "recommendedLength": 60
+      }
+    },
+    "metaDescription": {
+      "type": "customField",
+      "customField": "global::seo-description",
+      "maxLength": 160,
+      "options": {
+        "recommendedLength": 155
+      }
+    },
+    "shareImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}
