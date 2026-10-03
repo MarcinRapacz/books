@@ -13,6 +13,8 @@ const PUBLIC_ACTIONS = [
   'api::global.global.find',
 ];
 
+// Deliberately insecure starting point: any author may edit any article and set comment
+// moderation fields. Chapters 4 (is-owner policy) and 5 (controller input handling) close these gaps.
 const AUTHENTICATED_ACTIONS = [
   ...PUBLIC_ACTIONS,
   'api::article.article.create',
