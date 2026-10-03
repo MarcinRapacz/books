@@ -11,7 +11,7 @@ Projekt przewodni „Redakcja”: `code/` (Strapi 5.56.0, TS, SQLite, seed `npm 
 | 3 | 03-content-api.md | Content API od strony klienta: REST, GraphQL, klient | 7 | 2 | opus | – |
 | 4 | 04-routes-policies-middlewares.md | Trasy, polityki i middleware | 9 | 1 | opus | gotowy, przejrzany |
 | 5 | 05-kontrolery-i-serwisy.md | Kontrolery, serwisy, walidacja i błędy | 6 | 1 | opus | gotowy, przejrzany |
-| 6 | 06-document-service.md | Document Service, Query Engine i reagowanie na zmiany | 7 | 1 | opus | – |
+| 6 | 06-document-service.md | Document Service, Query Engine i reagowanie na zmiany | 7 | 1 | opus | gotowy, przejrzany |
 | 7 | 07-uwierzytelnianie.md | Użytkownicy, tokeny i uprawnienia | 6 | 2 | opus | – |
 | 8 | 08-funkcje-wbudowane.md | Draft & publish, i18n, media, e-mail, webhooki, cron | 7 | 2 | opus | – |
 | 9 | 09-pluginy.md | Własny plugin | 7 | 3 | opus | – |
