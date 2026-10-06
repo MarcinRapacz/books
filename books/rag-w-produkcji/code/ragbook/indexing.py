@@ -86,6 +86,7 @@ class SyncStats:
     chunks_total: int = 0
     chunks_embedded: int = 0
     chunks_unchanged: int = 0
+    chunks_acl_updated: int = 0
     points_deleted: int = 0
     seconds: float = 0.0
 
@@ -113,17 +114,18 @@ class Index:
             for field_name in ("doc_id", "chapter", "groups"):
                 client.create_payload_index(collection, field_name, models.PayloadSchemaType.KEYWORD)
 
-    def stored_state(self) -> dict[str, tuple[str, str]]:
-        """{point_id: (doc_id, chunk_hash)} for everything currently in the collection."""
-        state: dict[str, tuple[str, str]] = {}
+    def stored_state(self) -> dict[str, tuple[str, str, frozenset[str]]]:
+        """{point_id: (doc_id, chunk_hash, groups)} for everything currently in the collection."""
+        state: dict[str, tuple[str, str, frozenset[str]]] = {}
         offset = None
         while True:
             points, offset = self.client.scroll(
                 collection_name=self.collection, limit=1024, offset=offset,
-                with_payload=["doc_id", "chunk_hash"], with_vectors=False,
+                with_payload=["doc_id", "chunk_hash", "groups"], with_vectors=False,
             )
             for p in points:
-                state[str(p.id)] = (p.payload["doc_id"], p.payload["chunk_hash"])
+                state[str(p.id)] = (p.payload["doc_id"], p.payload["chunk_hash"],
+                                    frozenset(p.payload.get("groups", ())))
             if offset is None:
                 break
         return state
@@ -136,13 +138,18 @@ class Index:
         state = self.stored_state()
 
         todo, seen = [], set()
+        acl_changed: dict[frozenset[str], list[str]] = {}
         for c in chunks:
             seen.add(c.id)
             known = state.get(c.id)
-            if known is not None and known[1] == c.meta["chunk_hash"]:
-                stats.chunks_unchanged += 1
-            else:
+            groups = frozenset(c.meta["groups"])
+            if known is None or known[1] != c.meta["chunk_hash"]:
                 todo.append(c)
+            elif known[2] != groups:
+                # Same text, new ACL: a revoked group must lose access now, without paying for embeddings.
+                acl_changed.setdefault(groups, []).append(c.id)
+            else:
+                stats.chunks_unchanged += 1
         stats.docs_changed = len({c.meta["doc_id"] for c in todo})
 
         if todo:
@@ -155,6 +162,11 @@ class Index:
                         for i, c in enumerate(todo)],
             )
             stats.chunks_embedded = len(todo)
+
+        for groups, ids in acl_changed.items():
+            self.client.set_payload(collection_name=self.collection,
+                                    payload={"groups": sorted(groups)}, points=ids)
+            stats.chunks_acl_updated += len(ids)
 
         orphans = [pid for pid in state if pid not in seen]
         if orphans:

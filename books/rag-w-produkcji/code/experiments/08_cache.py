@@ -126,10 +126,11 @@ def main() -> None:
 
     # --- end-to-end behaviour of the answer cache on a small stream ---
     cache = SemanticAnswerCache(embedder, threshold=0.95)
-    cache.put(pairs[0][0], "HNSW to wielowarstwowy graf nawigowalny...", doc_hashes=("7ab3",))
-    hit, score = cache.lookup(pairs[0][1])
+    cache.put(pairs[0][0], "HNSW to wielowarstwowy graf nawigowalny...", groups=["public"],
+              doc_hashes=("7ab3",))
+    hit, score = cache.lookup(pairs[0][1], groups=["public"])
     print(f"\nlookup('{pairs[0][1]}') -> {'HIT' if hit else 'MISS'} at {score:.3f}")
-    stale, score2 = cache.lookup(pairs[0][1], live_hashes={"07-bazy-wektorowe.md": "ffff"})
+    stale, score2 = cache.lookup(pairs[0][1], groups=["public"], live_hashes={"07-bazy-wektorowe.md": "ffff"})
     print(f"the same lookup after the source document changed -> {'HIT' if stale else 'MISS'} at {score2:.3f}")
 
 

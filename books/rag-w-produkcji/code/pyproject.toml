@@ -11,3 +11,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["ragbook"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

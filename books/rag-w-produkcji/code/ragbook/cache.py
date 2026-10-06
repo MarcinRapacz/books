@@ -78,6 +78,7 @@ class AnswerEntry:
     question: str
     answer: str
     vector: np.ndarray
+    audience: frozenset[str] = frozenset()   # reader groups whose ACL filter produced the answer
     created_at: float = field(default_factory=time.time)
     doc_hashes: tuple[str, ...] = ()     # hashes of the documents the answer was grounded in
 
@@ -86,6 +87,8 @@ class SemanticAnswerCache:
     """Answer cache keyed by question *meaning*: a hit is any earlier question above `threshold`.
 
     Entries expire after `ttl` seconds and are invalidated when the documents they cite change.
+    A hit requires the same set of reader groups: an answer grounded in documents one audience may
+    see must never be served to another, or the cache bypasses the ACL filter of the search.
     """
 
     def __init__(self, embedder, threshold: float = 0.95, ttl: float = 24 * 3600):
@@ -99,13 +102,16 @@ class SemanticAnswerCache:
     def _vector(self, question: str) -> np.ndarray:
         return self.embedder.embed_queries([question])[0]
 
-    def lookup(self, question: str, live_hashes: dict[str, str] | None = None) -> tuple[AnswerEntry | None, float]:
+    def lookup(self, question: str, *, groups: list[str],
+               live_hashes: dict[str, str] | None = None) -> tuple[AnswerEntry | None, float]:
         """Return the best entry above the threshold (or None) and the similarity that decided it."""
         self._evict()
-        if not self.entries:
+        audience = frozenset(groups)
+        if not any(e.audience == audience for e in self.entries):
             self.stats.misses += 1
             return None, 0.0
         sims = self._matrix @ self._vector(question)
+        sims = np.where([e.audience == audience for e in self.entries], sims, -np.inf)
         best = int(np.argmax(sims))
         score = float(sims[best])
         entry = self.entries[best]
@@ -115,8 +121,10 @@ class SemanticAnswerCache:
         self.stats.hits += 1
         return entry, score
 
-    def put(self, question: str, answer: str, doc_hashes: tuple[str, ...] = ()) -> None:
-        self.entries.append(AnswerEntry(question, answer, self._vector(question), doc_hashes=doc_hashes))
+    def put(self, question: str, answer: str, *, groups: list[str],
+            doc_hashes: tuple[str, ...] = ()) -> None:
+        self.entries.append(AnswerEntry(question, answer, self._vector(question),
+                                        audience=frozenset(groups), doc_hashes=doc_hashes))
         self._rebuild()
 
     def _fresh(self, entry: AnswerEntry, live_hashes: dict[str, str] | None) -> bool:
