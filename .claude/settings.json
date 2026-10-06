@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(npx strapi:*)",
+      "Bash(npm run seed:*)",
+      "Bash(npm run develop:*)",
+      "Bash(nohup npx strapi:*)",
+      "Bash(kill:*)",
+      "Bash(ss -ltnp:*)",
+      "Bash(pgrep:*)",
+      "Bash(sleep:*)",
+      "Bash(rm -f .tmp/data.db:*)",
+      "Bash(curl -s https://docs.strapi.io/:*)",
+      "WebFetch(domain:docs.strapi.io)"
+    ]
+  }
+}
