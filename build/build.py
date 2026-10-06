@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Build the book: chapters/*.md -> build/book.html -> build/book.pdf (headless Chrome)."""
+"""Build one book: books/<slug>/chapters/*.md -> build/<slug>.html -> build/<slug>.pdf (headless Chrome).
+
+Usage: build/build.py <slug>   (slug = directory name under books/, e.g. ai-engineer)
+Title, subtitle, header and author come from books/<slug>/book.json.
+"""
 from __future__ import annotations
 
 import html
@@ -15,18 +19,25 @@ from pygments.formatters import HtmlFormatter
 PRINT = os.environ.get("PRINT") == "1"          # PRINT=1 -> bound, single-sided, toner-friendly variant
 DUPLEX = os.environ.get("DUPLEX") == "1"        # DUPLEX=1 -> mirrored margins for double-sided printing
 
-ROOT = Path(__file__).resolve().parent.parent
-CHAPTERS = ROOT / "chapters"
-BUILD = ROOT / "build"
+import json
 
-TITLE = "AI Engineer"
-SUBTITLE = "Praktyczny przewodnik po roadmapie roadmap.sh/ai-engineer"
-AUTHOR = "Marcin & Claude"
+ROOT = Path(__file__).resolve().parent.parent
+BUILD = ROOT / "build"
+SLUG = sys.argv[1] if len(sys.argv) > 1 else "ai-engineer"
+BOOK = ROOT / "books" / SLUG
+CHAPTERS = BOOK / "chapters"
+if not (BOOK / "book.json").exists():
+    sys.exit(f"no such book: {BOOK} (expected books/{SLUG}/book.json)")
+META = json.loads((BOOK / "book.json").read_text(encoding="utf-8"))
+TITLE = META["title"]
+SUBTITLE = META.get("subtitle", "")
+AUTHOR = META.get("author", "Marcin & Claude")
+HEADER = META.get("header", TITLE)
 
 CSS = """
 @page { size: A4; margin: __PAGE_MARGIN__;
   @bottom-center { content: counter(page); font-family: "Noto Sans", sans-serif; font-size: 9pt; color: #64748b; }
-  @top-right { content: "AI Engineer"; font-family: "Noto Sans", sans-serif; font-size: 8pt; color: #94a3b8; } }
+  @top-right { content: "__HEADER__"; font-family: "Noto Sans", sans-serif; font-size: 8pt; color: #94a3b8; } }
 @page :first { margin: 0; @bottom-center { content: none; } @top-right { content: none; } }
 html { font-size: 10.5pt; }
 body { font-family: "Noto Serif", "Liberation Serif", serif; line-height: 1.5; color: #1a1a1a; margin: 0; }
@@ -75,7 +86,7 @@ a { color: #1d4ed8; text-decoration: none; }
 """
 
 PAGE_MARGIN = os.environ.get("PAGE_MARGIN") or ("22mm 18mm 24mm 38mm" if PRINT else "22mm 20mm 24mm 20mm")
-CSS = CSS.replace("__PAGE_MARGIN__", PAGE_MARGIN)
+CSS = CSS.replace("__PAGE_MARGIN__", PAGE_MARGIN).replace("__HEADER__", HEADER.replace('"', '\\"'))
 PRINT_CSS = """
 @page :left { margin: 22mm 38mm 24mm 18mm; }
 @page :right { margin: 22mm 18mm 24mm 38mm; }
@@ -136,8 +147,8 @@ def main() -> int:
 
     BUILD.mkdir(exist_ok=True)
     suffix = "-print" if PRINT else ""
-    out_html = BUILD / f"book{suffix}.html"
-    out_pdf = BUILD / f"book{suffix}.pdf"
+    out_html = BUILD / f"{SLUG}{suffix}.html"
+    out_pdf = BUILD / f"{SLUG}{suffix}.pdf"
 
     def print_pdf() -> None:
         cmd = [
@@ -157,11 +168,15 @@ def main() -> int:
 
     cursor = [toc_pages]  # headings appear in document order, so never search backwards
 
+    def normalize(s: str) -> str:
+        # pdftotext puts a space after inline code ("populate : ..."), so drop spaces before punctuation
+        return re.sub(r"\s+([:,.;?!)])", r"\1", re.sub(r"\s+", " ", s)).strip()
+
     def find_page(title: str) -> int | None:
-        norm = re.sub(r"\s+", " ", html.unescape(title)).strip()
+        norm = normalize(html.unescape(title))
         for i, pg in enumerate(pages[cursor[0]:], start=cursor[0] + 1):
             for line in pg.splitlines():
-                ln = re.sub(r"\s+", " ", line).strip()
+                ln = normalize(line)
                 if ln == norm or (len(norm) > 40 and ln and norm.startswith(ln) and len(ln) >= 25):
                     cursor[0] = i - 1
                     return i

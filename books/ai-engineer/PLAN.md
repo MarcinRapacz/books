@@ -1,7 +1,7 @@
 # Plan książki „AI Engineer. Praktyczny przewodnik po roadmapie roadmap.sh/ai-engineer”
 
 Źródło struktury: https://roadmap.sh/ai-engineer (JSON: https://roadmap.sh/ai-engineer.json, 22 tematy, 167 podtematów).
-Zasady pisania: BRIEF.md. Skład: `.venv/bin/python build/build.py` → build/book.pdf (Markdown → HTML → headless Chrome, KaTeX dla wzorów).
+Zasady pisania: BRIEF.md. Skład: `.venv/bin/python build/build.py ai-engineer` → build/ai-engineer.pdf (Markdown → HTML → headless Chrome, KaTeX dla wzorów).
 
 | Nr | Plik | Tytuł | Strony (cel) | Status |
 |---|---|---|---|---|
