@@ -351,6 +351,8 @@ def lookup(self, question: str, *, groups: list[str], live_hashes=None):
 
 `groups` jest argumentem obowiązkowym, bez wartości domyślnej: wywołanie, które nie mówi, dla kogo jest odpowiedź, kończy się błędem, zamiast po cichu trafić do wspólnej puli. Cena to niższy hit rate – każda kombinacja grup ma własny cache – i jest to cena, którą płacisz chętnie.
 
+Klucz z grupami nie wystarcza, gdy uprawnienia zmieniają się w czasie: odpowiedź zapisana dla `public`, zanim dokument przeszedł do `internal`, dalej pasuje do klucza. Dlatego unieważnianie po zmianie dokumentu porównuje nie hash treści, tylko `Document.version_hash`, liczony z treści **i** listy grup. Przeniesienie dokumentu do innej grupy unieważnia więc każdą odpowiedź, która go cytuje, tak samo jak edycja tekstu.
+
 Druga droga to `sync` z początku rozdziału. Porównuje on `chunk_hash`, czyli tekst. Gdy dokument przechodzi z `public` do `internal`, tekst się nie zmienia, więc chunk jest „bez zmian” i w payloadzie zostaje stara grupa. Odebranie uprawnień nie działa, dopóki ktoś nie poprawi w dokumencie choćby przecinka. Stan kolekcji musi więc obejmować też grupy, a sama zmiana grup nie powinna kosztować embeddingów:
 
 ```python
