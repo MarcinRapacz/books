@@ -333,6 +333,42 @@ Dlaczego nie po wyszukiwaniu? Powód jakościowy widać w tych liczbach: filtrow
 
 Dane osobowe rządzą się tą samą zasadą co w tomie 1, rozdział 11, ale w innym momencie: maskowanie musi nastąpić **przed** embedowaniem, bo inaczej PESEL i adres e-mail trafiają do wektora, do payloadu i do każdej odpowiedzi cytującej ten fragment. Funkcja `mask()` wchodzi więc między parsowanie a chunkowanie, a mapa odwrotna żyje poza indeksem.
 
+### Gdzie filtr nie sięga: cache i synchronizacja
+
+Filtr w zapytaniu chroni tylko tę drogę, która przez zapytanie przechodzi. W tym rozdziale zbudowaliśmy dwie, które go omijają, i obie wyglądały niewinnie.
+
+Pierwsza to cache odpowiedzi. Kierowniczka z grupami `public` i `internal` pyta o koszt wdrożenia modelu, wyszukiwanie zwraca fragmenty z rozdziału wewnętrznego, odpowiedź trafia do cache'u. Godzinę później to samo pytanie zadaje ktoś z samą grupą `public`. Cache trafia, wyszukiwanie w ogóle się nie odbywa, a czytelnik dostaje odpowiedź zbudowaną z dokumentów, których nie ma prawa zobaczyć. Nie chroni przed tym ani wysoki próg, ani dokładne dopasowanie tekstu pytania – to ten sam problem w obu wariantach cache'u. Odpowiedź należy do pary „pytanie i zestaw uprawnień”, więc zestaw grup musi być częścią klucza:
+
+```python
+def lookup(self, question: str, *, groups: list[str], live_hashes=None):
+    audience = frozenset(groups)       # the same groups -> the same ACL filter -> the same documents
+    if not any(e.audience == audience for e in self.entries):
+        return None, 0.0
+    sims = self._matrix @ self._vector(question)
+    sims = np.where([e.audience == audience for e in self.entries], sims, -np.inf)
+    ...
+```
+
+`groups` jest argumentem obowiązkowym, bez wartości domyślnej: wywołanie, które nie mówi, dla kogo jest odpowiedź, kończy się błędem, zamiast po cichu trafić do wspólnej puli. Cena to niższy hit rate – każda kombinacja grup ma własny cache – i jest to cena, którą płacisz chętnie.
+
+Druga droga to `sync` z początku rozdziału. Porównuje on `chunk_hash`, czyli tekst. Gdy dokument przechodzi z `public` do `internal`, tekst się nie zmienia, więc chunk jest „bez zmian” i w payloadzie zostaje stara grupa. Odebranie uprawnień nie działa, dopóki ktoś nie poprawi w dokumencie choćby przecinka. Stan kolekcji musi więc obejmować też grupy, a sama zmiana grup nie powinna kosztować embeddingów:
+
+```python
+for c in chunks:
+    known = state.get(c.id)                       # (doc_id, chunk_hash, groups)
+    groups = frozenset(c.meta["groups"])
+    if known is None or known[1] != c.meta["chunk_hash"]:
+        todo.append(c)                            # new or edited text: embed again
+    elif known[2] != groups:
+        acl_changed.setdefault(groups, []).append(c.id)   # same text, new ACL
+...
+for groups, ids in acl_changed.items():
+    self.client.set_payload(collection_name=self.collection,
+                            payload={"groups": sorted(groups)}, points=ids)
+```
+
+Oba przypadki mają test w `code/tests/`: „czytelnik z inną grupą nie dostaje odpowiedzi z cache'u” i „po odebraniu grupy dokument znika z wyników bez ponownego embedowania”. To dobra reguła ogólna: każdy magazyn, który trzyma coś wyprowadzonego z dokumentów – cache, streszczenia, graf encji, logi z treścią – albo przechowuje uprawnienia razem z danymi, albo jest dziurą w ACL.
+
 ## Obserwowalność: jeden rekord na zapytanie
 
 Zgłoszenie brzmi zwykle tak: „zapytałem o limit pliku w transkrypcji i dostałem bzdurę”. Bez zapisu z tego zapytania masz dwie hipotezy – wyszukiwanie nie znalazło właściwej sekcji albo znalazło ją, a model źle jej użył – i nic, czym je rozstrzygnąć. RAG dokłada więc do zwykłego trace'u (tom 1, rozdział 12) to, co znalazło wyszukiwanie, z jakiego wariantu indeksu i jak wyglądał prompt.
@@ -417,7 +453,7 @@ Kształt tego rekordu przenosi się bez zmian do gotowych narzędzi: Langfuse ma
 11. Budżet latencji jest rozpisany na etapy z percentylami z produkcji, a odpowiedź jest streamowana.
 12. Kontekst trafia do modelu jako dane (JSON albo `tool_result`) z jawnym źródłem, a system prompt ma politykę i zachowanie zastępcze.
 13. Sanityzacja działa przed chunkowaniem, odsetek oflagowanych chunków jest metryką, nie bramką, a treść z indeksu nie uruchamia narzędzi o skutkach ubocznych.
-14. Kontrola dostępu jest filtrem w zapytaniu i ma test „grupa A nie widzi dokumentów grupy B”, a dane osobowe są maskowane przed embedowaniem.
+14. Kontrola dostępu jest filtrem w zapytaniu i ma test „grupa A nie widzi dokumentów grupy B”, cache odpowiedzi ma zestaw grup w kluczu, synchronizacja przenosi zmianę grup do payloadu, a dane osobowe są maskowane przed embedowaniem.
 15. Każde zapytanie zapisuje trace z `variant`, `retrieved`, `prompt_hash`, latencjami i kosztem, golden set działa w CI, a kciuki w dół są co tydzień przeglądane.
 
 ## Podsumowanie
@@ -427,7 +463,7 @@ Kształt tego rekordu przenosi się bez zmian do gotowych narzędzi: Langfuse ma
 - Cache embeddingów zapytań jest bezpieczny i tani (29 µs zamiast 22,8 ms), ale nie widzi parafraz, a jego hit rate zależy wyłącznie od koncentracji ruchu – od 0,57 do 0,97 w symulacji.
 - Semantyczny cache odpowiedzi nie ma bezpiecznego progu na naszych danych: pary o różnych odpowiedziach były podobne bardziej (0,948) niż parafrazy o tej samej odpowiedzi (0,883).
 - W koszcie zapytania dominuje wyjście (65 procent przy `k=5` i `claude-opus-5`), a w latencji generacja i reranking; podwojenie `k` dokłada 30 procent, wybór modelu zmienia rachunek pięciokrotnie, a percentyle mierzy się per etap i w produkcji.
-- Zatruty dokument wchodzi do promptu przez normalne wyszukiwanie i zajmuje pierwsze miejsce; obroną jest kontekst jako dane, sanityzacja przed chunkowaniem, ograniczone narzędzia i ACL jako filtr w zapytaniu, a wykrywanie wzorców jest metryką (3,7 procent chunków), nie bramką.
+- Zatruty dokument wchodzi do promptu przez normalne wyszukiwanie i zajmuje pierwsze miejsce; obroną jest kontekst jako dane, sanityzacja przed chunkowaniem, ograniczone narzędzia i ACL jako filtr w zapytaniu – także w cache'u i w synchronizacji, które ten filtr omijają – a wykrywanie wzorców jest metryką (3,7 procent chunków), nie bramką.
 - Trace z `variant`, `retrieved`, `prompt_hash`, latencjami i kosztem odróżnia porażkę wyszukiwania od porażki generacji; metryki online sygnalizują zmianę, golden set w CI ocenia jakość, a feedback dostarcza nowych pytań.
 
 ## Co dalej
