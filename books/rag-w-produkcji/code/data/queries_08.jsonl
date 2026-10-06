@@ -1,0 +1,20 @@
+{"id": "p01", "a": "Jak działa HNSW?", "b": "Na czym polega algorytm HNSW w bazach wektorowych?", "same_answer": true}
+{"id": "p02", "a": "Co to jest prompt injection?", "b": "Czym jest wstrzyknięcie promptu?", "same_answer": true}
+{"id": "p03", "a": "Jaki jest limit długości wejścia modelu MiniLM?", "b": "Ile tokenów przyjmuje na wejściu paraphrase-multilingual-MiniLM-L12-v2?", "same_answer": true}
+{"id": "p04", "a": "Kiedy używać RAG zamiast fine-tuningu?", "b": "Co wybrać do wiedzy firmowej: RAG czy dostrajanie modelu?", "same_answer": true}
+{"id": "p05", "a": "Jak włączyć prompt caching w API Claude?", "b": "W jaki sposób korzystać z cache promptu w SDK Anthropic?", "same_answer": true}
+{"id": "p06", "a": "Co to jest okno kontekstu?", "b": "Czym jest context window modelu językowego?", "same_answer": true}
+{"id": "p07", "a": "Jak zbudować serwer MCP w Pythonie?", "b": "W jaki sposób napisać własny serwer MCP?", "same_answer": true}
+{"id": "p08", "a": "Czym jest chunking dokumentów?", "b": "Na czym polega dzielenie dokumentów na fragmenty przed indeksowaniem?", "same_answer": true}
+{"id": "p09", "a": "Jak mierzyć jakość wyszukiwania w RAG?", "b": "Jakimi metrykami ocenia się etap retrievalu?", "same_answer": true}
+{"id": "p10", "a": "Do czego służy filtr po metadanych w bazie wektorowej?", "b": "Po co filtrować wyniki wyszukiwania po polach payloadu?", "same_answer": true}
+{"id": "n01", "a": "Jaki jest limit tokenów modelu multilingual-e5-small?", "b": "Jaki jest limit tokenów modelu paraphrase-multilingual-MiniLM-L12-v2?", "same_answer": false}
+{"id": "n02", "a": "Ile kosztuje milion tokenów wejścia claude-opus-5?", "b": "Ile kosztuje milion tokenów wyjścia claude-opus-5?", "same_answer": false}
+{"id": "n03", "a": "Jak usunąć dokument z kolekcji w Qdrancie?", "b": "Jak dodać dokument do kolekcji w Qdrancie?", "same_answer": false}
+{"id": "n04", "a": "Co to jest recall@k?", "b": "Co to jest MRR?", "same_answer": false}
+{"id": "n05", "a": "Czym jest bezpośredni prompt injection?", "b": "Czym jest pośredni prompt injection?", "same_answer": false}
+{"id": "n06", "a": "Jak włączyć streaming w SDK Anthropic?", "b": "Jak włączyć streaming w SDK OpenAI?", "same_answer": false}
+{"id": "n07", "a": "Jakie są zalety indeksu HNSW?", "b": "Jakie są zalety indeksu IVF?", "same_answer": false}
+{"id": "n08", "a": "Co to jest few-shot prompting?", "b": "Co to jest zero-shot prompting?", "same_answer": false}
+{"id": "n09", "a": "Ile kosztuje zapis do cache 5-minutowego?", "b": "Ile kosztuje zapis do cache godzinnego?", "same_answer": false}
+{"id": "n10", "a": "Jaki wymiar mają wektory modelu multilingual-e5-small?", "b": "Jaki wymiar mają wektory modelu multilingual-e5-large?", "same_answer": false}

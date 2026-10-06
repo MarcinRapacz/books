@@ -1,0 +1,30 @@
+{"id": "r001", "question": "Jak ustawić limit długości odpowiedzi w wywołaniu API?", "label": "local", "split": "prototype"}
+{"id": "r002", "question": "Co robi parametr max_seq_length w modelu embeddingowym?", "label": "local", "split": "prototype"}
+{"id": "r003", "question": "Jak zbudować prompt z fragmentami dokumentów w tagach XML?", "label": "local", "split": "prototype"}
+{"id": "r004", "question": "Czym różni się recall od precyzji przy ocenie wyszukiwania?", "label": "local", "split": "prototype"}
+{"id": "r005", "question": "Streść w kilku zdaniach cały rozdział o bezpieczeństwie.", "label": "global", "split": "prototype"}
+{"id": "r006", "question": "Ile sekcji ma ta dokumentacja i jak są rozłożone po rozdziałach?", "label": "global", "split": "prototype"}
+{"id": "r007", "question": "Wymień wszystkie rozdziały, które dotyczą ewaluacji.", "label": "global", "split": "prototype"}
+{"id": "r008", "question": "Zrób przegląd całej dokumentacji dla nowej osoby w zespole.", "label": "global", "split": "prototype"}
+{"id": "r009", "question": "Dzień dobry!", "label": "out_of_domain", "split": "prototype"}
+{"id": "r010", "question": "Dzięki, świetna robota.", "label": "out_of_domain", "split": "prototype"}
+{"id": "r011", "question": "Jaki film obejrzeć w weekend?", "label": "out_of_domain", "split": "prototype"}
+{"id": "r012", "question": "Przetłumacz to zdanie na hiszpański.", "label": "out_of_domain", "split": "prototype"}
+{"id": "r101", "question": "Streść cały rozdział 9 w pięciu punktach.", "label": "global", "split": "test"}
+{"id": "r102", "question": "Ile rozdziałów tej dokumentacji mówi o kosztach?", "label": "global", "split": "test"}
+{"id": "r103", "question": "Wypisz wszystkie rozdziały, w których pojawia się Qdrant.", "label": "global", "split": "test"}
+{"id": "r104", "question": "O czym jest ta książka jako całość?", "label": "global", "split": "test"}
+{"id": "r105", "question": "Które rozdziały mam przeczytać, zanim zacznę budować agenta?", "label": "global", "split": "test"}
+{"id": "r106", "question": "Podaj spis treści całego tomu.", "label": "global", "split": "test"}
+{"id": "r107", "question": "Ile łącznie bloków kodu w Pythonie jest w tej dokumentacji?", "label": "global", "split": "test"}
+{"id": "r108", "question": "Porównaj w kilku zdaniach tematykę rozdziału 11 i rozdziału 12.", "label": "global", "split": "test"}
+{"id": "r201", "question": "Cześć, jak się dzisiaj masz?", "label": "out_of_domain", "split": "test"}
+{"id": "r202", "question": "Dziękuję, to wszystko na dziś.", "label": "out_of_domain", "split": "test"}
+{"id": "r203", "question": "Jaka jest pogoda w Krakowie?", "label": "out_of_domain", "split": "test"}
+{"id": "r204", "question": "Napisz mi wiersz o jesieni.", "label": "out_of_domain", "split": "test"}
+{"id": "r205", "question": "Ile kalorii ma banan?", "label": "out_of_domain", "split": "test"}
+{"id": "r206", "question": "Kto wygrał ostatnie mistrzostwa świata w piłce nożnej?", "label": "out_of_domain", "split": "test"}
+{"id": "r207", "question": "Podaj przepis na żurek.", "label": "out_of_domain", "split": "test"}
+{"id": "r208", "question": "Jak dojechać z Katowic do Wrocławia pociągiem?", "label": "out_of_domain", "split": "test"}
+{"id": "r209", "question": "Zamów mi taksówkę na jutro rano.", "label": "out_of_domain", "split": "test"}
+{"id": "r210", "question": "Opowiedz jakiś żart.", "label": "out_of_domain", "split": "test"}
