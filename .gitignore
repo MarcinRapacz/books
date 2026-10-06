@@ -1,2 +1,6 @@
 .venv/
+books/*/.venv/
 build/*.html
+__pycache__/
+.cache/
+books/strapi-5/work/
