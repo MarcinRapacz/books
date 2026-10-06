@@ -80,13 +80,15 @@ class AnswerEntry:
     vector: np.ndarray
     audience: frozenset[str] = frozenset()   # reader groups whose ACL filter produced the answer
     created_at: float = field(default_factory=time.time)
-    doc_hashes: tuple[str, ...] = ()     # hashes of the documents the answer was grounded in
+    doc_hashes: tuple[str, ...] = ()     # Document.version_hash of every source the answer cites
 
 
 class SemanticAnswerCache:
     """Answer cache keyed by question *meaning*: a hit is any earlier question above `threshold`.
 
-    Entries expire after `ttl` seconds and are invalidated when the documents they cite change.
+    Entries expire after `ttl` seconds and are invalidated when the documents they cite change;
+    `doc_hashes` and `live_hashes` hold `Document.version_hash`, which covers the ACL as well as the
+    text, so moving a document to another group expires every answer built from it.
     A hit requires the same set of reader groups: an answer grounded in documents one audience may
     see must never be served to another, or the cache bypasses the ACL filter of the search.
     """

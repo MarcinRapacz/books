@@ -45,6 +45,11 @@ class Document:
     def content_hash(self) -> str:
         return sha(self.text)
 
+    @property
+    def version_hash(self) -> str:
+        """Hash of text *and* ACL: what answer caches compare, so revoking a group expires answers."""
+        return sha(f"{self.content_hash}|{','.join(sorted(self.groups))}")
+
 
 def load_documents(corpus_dir: Path = CORPUS_DIR) -> list[Document]:
     """Group the parsed sections of volume 1 back into documents (one per Markdown file)."""
